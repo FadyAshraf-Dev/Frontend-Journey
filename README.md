@@ -33,7 +33,7 @@ Experience the interactive builds immediately on your machine:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com
+   git clone https://github.com/FadyAshraf-Dev/Frontend-Journey
    ```
 2. **Navigate into the Workspace:**
    ```bash
