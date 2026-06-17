@@ -3,239 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        * { box-sizing: border-box; }
-        td input { width: 3rem; }
-        form input, select {
-            width: 100%;
-            margin: 0.1rem 0;
-        }
-        form {
-            margin: auto;
-            width: 70vw;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        table {
-
-            margin: auto;
-            width: 70vw;
-        }
-        td button, td input { width: 100%; }
-        td { text-align: center; }
-    </style>
+    <title>Enterprise Inventory Console</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
+<body class="py-5">
 
-<body>
+<div class="container">
+    <div class="mb-5 text-center text-md-start d-md-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="fw-bold text-dark tracking-tight m-0">Inventory Dashboard</h1>
+            <p class="text-muted m-0">Manage stock items, tracking variables, and pricing valuations locally.</p>
+        </div>
+        <div class="mt-3 mt-md-0" style="max-width: 300px; width: 100%;">
+            <input type="text" id="search" class="form-control form-control-lg shadow-sm" placeholder="🔍 Search items...">
+        </div>
+    </div>
 
-<form id="form">
-    <input type="text" id="name" placeholder="Name">
-    <input type="number" id="price" placeholder="Price">
-    <input type="number" id="quantity" placeholder="Quantity">
+    <div class="row g-4">
+        <div class="col-12 col-xl-4">
+            <div class="card dashboard-card shadow-sm p-4">
+                <h4 class="fw-bold text-dark mb-4">Add New Stock Element</h4>
+                <form id="form" onsubmit="return false;">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Product Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="e.g., iPhone 15 Pro">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Price ($)</label>
+                        <input type="number" id="price" class="form-control" placeholder="0.00" min="0" step="0.01">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Stock Quantity</label>
+                        <input type="number" id="quantity" class="form-control" placeholder="0" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Product Category</label>
+                        <select id="category" class="form-select">
+                            <option value="">-- Choose Category</option>
+                            <option value="Phones">Phones</option>
+                            <option value="TVs">TVs</option>
+                            <option value="Tablets">Tablets</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label small fw-semibold text-secondary">Manufacturer Brand</label>
+                        <select id="brand" class="form-select">
+                            <option value="">-- Choose Brand</option>
+                            <option value="Apple">Apple</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="LG">LG</option>
+                        </select>
+                    </div>
+                    <button id="add" type="button" class="btn btn-primary w-100 btn-lg rounded-3 fw-medium">Add to Stock List</button>
+                </form>
+            </div>
+        </div>
 
-    <select id="category">
-        <option value="">--category</option>
-        <option value="Phones">Phones</option>
-        <option value="TVs">TVs</option>
-        <option value="Tablets">Tablets</option>
-    </select>
+        <div class="col-12 col-xl-8">
+            <div class="card dashboard-card shadow-sm p-4 h-100">
+                <h4 class="fw-bold text-dark mb-4">Stock Ledger Logs</h4>
+                <div class="table-responsive border shadow-inner">
+                    <table class="table table-hover m-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Item Name</th>
+                                <th style="width: 15%;">Price</th>
+                                <th style="width: 12%;">Qty</th>
+                                <th style="width: 18%;">Category</th>
+                                <th style="width: 15%;">Brand</th>
+                                <th style="width: 15%; text-align: center;" colspan="2">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryBody" class="table-group-divider">
+                            </tbody>
+                        <tfoot id="inventoryFoot">
+                            </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <select id="brand">
-        <option value="">--brand</option>
-        <option value="Apple">Apple</option>
-        <option value="Samsung">Samsung</option>
-        <option value="LG">LG</option>
-    </select>
-
-    <button id="add" type="button">Add Item</button>
-    <input type="text" id="search" placeholder="Search?">
-</form>
-
-<table border="1">
-    <thead>
-        <tr>
-            <th>Item</th><th>Price</th><th>Qty</th>
-            <th>Category</th><th>Brand</th>
-            <th>Remove</th><th>Edit</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
-
-<script>
-    const nameEl = document.querySelector("#name");
-    const priceEl = document.querySelector("#price");
-    const qtyEl = document.querySelector("#quantity");
-    const categoryEl = document.querySelector("#category");
-    const brandEl = document.querySelector("#brand");
-    const searchEl = document.querySelector("#search");
-    const tbody = document.querySelector("tbody");
-    const addBtn = document.querySelector("#add");
-
-    let data = JSON.parse(localStorage.getItem("data")) || [];
-
-    /* ------------------------- Helpers ------------------------- */
-
-    const createInput = (value, type = "text") =>
-        Object.assign(document.createElement("input"), { value, type });
-
-    const createBtn = (label, cls) =>
-        Object.assign(document.createElement("button"), {
-            textContent: label,
-            className: cls
-        });
-
-    const save = () =>
-        localStorage.setItem("data", JSON.stringify(data));
-
-    const resetForm = () => {
-        nameEl.value = "";
-        priceEl.value = "";
-        qtyEl.value = "";
-        categoryEl.value = "";
-        brandEl.value = "";
-        categoryEl.firstElementChild.style.display = "block";
-        brandEl.firstElementChild.style.display = "block";
-    };
-
-    const replaceEditWithCanfirm = (row, confirmBtn, cancelBtn)=>{
-        row.children[6].innerHTML = "";
-        row.children[6].append(confirmBtn, cancelBtn);
-
-    }
-
-    const replaceTableCellsWithInputs = (row, field, i)=>{
-        row.children[i].innerHTML = "";
-        row.children[i].appendChild(field);
-
-    }
-
-    /* ------------------------- Rendering ------------------------- */
-
-    function renderTable(list = data) {
-        tbody.innerHTML = "";
-
-        list.forEach((item, index) => addRow(index, item));
-
-        tbody.insertAdjacentHTML(
-            "beforeend",
-            `<tfoot>
-                <tr><td colspan="7" style="text-align:center">
-                    Total is ${list.reduce((a, o) => a + Number(o.price), 0)}$
-                </td></tr>
-            </tfoot>`
-        );
-    }
-
-    function addRow(index, item) {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${item.name}</td>
-            <td>${item.price}</td>
-            <td>${item.quantity}</td>
-            <td>${item.category}</td>
-            <td>${item.brand}</td>
-            <td><button class="remove">Remove</button></td>
-            <td><button class="edit">Edit</button></td>
-        `;
-
-        row.querySelector(".remove").onclick = () => {
-            data.splice(index, 1);
-            save();
-            renderTable();
-        };
-
-        row.querySelector(".edit").onclick = () => enterEditMode(row, index);
-
-        tbody.appendChild(row);
-    }
-
-    /* ------------------------- Edit Mode ------------------------- */
-
-    function enterEditMode(row, index) {
-        const original = data[index];
-
-        // Create Inputs (short & clean)
-        const nameInput     = Object.assign(document.createElement("input"), { value: original.name });
-        const priceInput    = Object.assign(document.createElement("input"), { value: original.price, type: "number" });
-        const qtyInput      = Object.assign(document.createElement("input"), { value: original.quantity, type: "number" });
-
-        // Clone selects
-        const categorySelect = categoryEl.cloneNode(true);
-        const brandSelect    = brandEl.cloneNode(true);
-
-        // Assigning select values + hiding first option
-        [[categorySelect, original.category], [brandSelect, original.brand]].forEach(([select, val]) => {
-            Object.assign(select, { value: val });
-            Object.assign(select.firstElementChild.style, { display: "none" });
-        });
-
-        // Combine all editable fields
-        const fields = [nameInput, priceInput, qtyInput, categorySelect, brandSelect];
-
-        // Replace table cells with the new inputs/selects
-        fields.forEach((field, i) => {
-            replaceTableCellsWithInputs(row, field, i)
-        });
-
-        // Buttons
-        const confirmBtn = Object.assign(document.createElement("button"), { textContent: "Confirm", className: "confirm" });
-        const cancelBtn  = Object.assign(document.createElement("button"), { textContent: "Cancel", className: "cancel" });
-
-        replaceEditWithCanfirm(row, confirmBtn, cancelBtn)
-        // Cancel Action
-        cancelBtn.onclick = () => renderTable();
-
-        // Confirm Action
-        confirmBtn.onclick = () => {
-            if (!nameInput.value || !priceInput.value || !qtyInput.value ||
-                !categorySelect.value || !brandSelect.value) return;
-
-            data[index] = {
-                name: nameInput.value,
-                price: priceInput.value,
-                quantity: qtyInput.value,
-                category: categorySelect.value,
-                brand: brandSelect.value
-            };
-            
-            save();
-            renderTable();
-        };
-    }
-    /* ------------------------- Events ------------------------- */
-
-    addBtn.onclick = () => {
-        if (!nameEl.value || !priceEl.value || !qtyEl.value ||
-            !categoryEl.value || !brandEl.value) return;
-
-        data.push({
-            name: nameEl.value,
-            price: priceEl.value,
-            quantity: qtyEl.value,
-            category: categoryEl.value,
-            brand: brandEl.value
-        });
-
-        save();
-        renderTable();
-        resetForm();
-    };
-
-    searchEl.onkeyup = () => {
-        const q = searchEl.value.toLowerCase();
-        renderTable(data.filter(item =>
-            item.name.toLowerCase().includes(q)
-        ));
-    };
-
-    categoryEl.onchange = () => categoryEl.firstElementChild.style.display = "none";
-    brandEl.onchange = () => brandEl.firstElementChild.style.display = "none";
-
-    /* ------------------------- Initalise ------------------------- */
-    renderTable();
+<script src="script.js">
 </script>
 
 </body>

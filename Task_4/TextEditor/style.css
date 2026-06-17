@@ -1,0 +1,39 @@
+        body {
+            background: linear-gradient(135deg, #f6f8f9 0%, #e5ebee 100%);
+            min-height: 100vh;
+        }
+        .studio-card {
+            background: white;
+            border-radius: 24px;
+            max-width: 700px;
+            width: 100%;
+            border: none;
+        }
+        .preview-box {
+            background-color: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            transition: all 0.2s ease-in-out;
+        }
+        /* Custom styling to make the color picker input look like a round button */
+        input[type="color"] {
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: 2px solid #dee2e6;
+            border-radius: 50%;
+        }
