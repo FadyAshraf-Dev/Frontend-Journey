@@ -1,0 +1,27 @@
+
+    div{
+
+        width: 200px;
+        padding: 10px;
+        margin: 250px auto;
+        background: red ;
+        font-size: 25px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.5s;
+    }
+    p {
+        text-align: center;
+    }
+
+    div:hover{
+
+        width: 300px;
+        background-color: rgb(165, 98, 228) ;
+        letter-spacing: 15px;
+        border-radius: 25px;
+        /* color: blueviolet; */
+    }
+
+  
+

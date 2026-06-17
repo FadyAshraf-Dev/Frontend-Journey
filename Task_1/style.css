@@ -1,0 +1,16 @@
+        body 
+        {
+            background-color: #afd8e8;
+        }
+
+        button
+         {
+            display: block;
+            margin:0 auto;
+            color: white;
+            background: #fc8073;
+            border: none;
+            padding: 10px 15px ;
+            border-radius: 15px;
+            cursor: pointer;
+         }

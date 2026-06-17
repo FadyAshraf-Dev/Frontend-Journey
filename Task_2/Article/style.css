@@ -1,0 +1,29 @@
+        .article
+        {
+            width: 400px;
+            background: rgb(112, 67, 67);
+            margin: 100px  auto;
+            font-family: Verdana;
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        .title 
+        {
+            padding: 20px;
+            text-align: center;
+            letter-spacing: 3px;
+            color :orange;
+            text-transform: capitalize;
+            font-weight: bold;
+            font-size: 25px;
+        }
+
+        .body {
+            padding: 20px;
+            text-align: center;
+            border: 3px dashed gray;
+            color : white ;
+            font-size: 20px;
+            line-height: 40px;
+        }
